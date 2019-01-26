@@ -1,0 +1,105 @@
+buildscript {
+    def springBootVersion = '1.5.18.RELEASE'
+    repositories {
+        maven { url localMavenRepo }
+        mavenLocal()
+        maven { url remoteMavenRepo }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+    }
+}
+
+apply plugin: 'java'
+//apply plugin: 'war'
+apply plugin: 'maven'
+apply plugin: 'idea' // apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+group = 'code.ponfee'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = 1.8
+
+def localMavenRepo=project.localMavenRepo[1..-2]
+def remoteMavenRepo=project.remoteMavenRepo[1..-2]
+
+repositories {
+    maven { url localMavenRepo }
+    mavenLocal()
+    maven { url remoteMavenRepo }
+    mavenCentral()
+}
+
+bootRun {
+    addResources = true // 开启页面热加载功能
+}
+
+// 用def定义的变量，使用时需要用双引号"，而不能用单引号'
+def springVersion = '4.3.21.RELEASE'
+dependencies {
+    // spring dependency
+    //implementation 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+
+    compile 'org.springframework.boot:spring-boot-starter-aop'
+    compile 'org.springframework.boot:spring-boot-configuration-processor'
+    //compile 'org.springframework.boot:spring-boot-devtools' // 热部署
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+    compile 'mysql:mysql-connector-java:8.0.13'
+    compile 'com.alibaba:druid:1.1.12'
+    compile 'org.springframework.data:spring-data-redis:1.8.17.RELEASE'
+    compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
+
+    compile('code.ponfee:commons-core:1.16-SNAPSHOT') {
+        exclude module: 'log4j-api'
+        exclude module: 'log4j-core'
+        exclude module: 'log4j-slf4j-impl'
+        exclude module: 'log4j-jcl'
+        exclude module: 'log4j-jul'
+        exclude module: 'log4j-web'
+        exclude module: 'slf4j-api'
+        exclude module: 'log4j-over-slf4j'
+        exclude module: 'jcl-over-slf4j'
+        exclude module: 'jul-to-slf4j'
+    }
+
+    compile "org.springframework:spring-tx:${springVersion}"
+    compile "org.springframework:spring-jdbc:$springVersion"
+
+    // 分页插件: pagehelper.helper-dialect: mysql
+    // sessionFactory.setVfs(SpringBootVFS.class);
+    //compile 'com.github.pagehelper:pagehelper-spring-boot-starter:1.2.10'
+}
+
+compileJava.dependsOn(processResources {
+    // gradle build compile include xml resources: in /build dir
+    //from('src/main/java') {
+    //    include '**/*.xml'
+    //}
+})
+
+sourceSets {
+    main {
+        // idea(eclipse) build project include xml resources: in /out dir
+        resources {
+            srcDirs = ['src/main/java', 'src/main/resources']
+        }
+    }
+}
+
+// 上传Task，Gradle会生成并上传pom.xml文件
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: localMavenRepo)
+            // 构造项目的Pom文件
+            pom.project {
+                name = project.name
+                packaging = 'jar'
+                description = 'commons console'
+            }
+        }
+    }
+}

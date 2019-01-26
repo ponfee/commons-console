@@ -1,0 +1,31 @@
+spring.datasource:
+
+  #primary.url: jdbc:mysql://112.74.170.75:3306/spy_schedule_job?useUnicode=true&characterEncoding=UTF-8
+  primary.url: jdbc:log4jdbc:mysql://112.74.170.75:3306/spy_schedule_job?useUnicode=true&characterEncoding=UTF-8
+  primary.username: root
+  primary.password: 
+
+  #secondary.url: jdbc:mysql://127.0.0.1:3306/cas?useUnicode=true&characterEncoding=UTF-8
+  secondary.url: jdbc:log4jdbc:mysql://127.0.0.1:3306/cms?useUnicode=true&characterEncoding=UTF-8
+  secondary.username: root
+  secondary.password: mysql
+
+
+  default: primary
+  #driver-class-name: com.mysql.cj.jdbc.Driver
+  driver-class-name: net.sf.log4jdbc.DriverSpy
+  maxActive: 20                                # 连接池的配置信息
+  initialSize: 5
+  minIdle: 5
+  maxWait: 60000                               # 配置获取连接等待超时的时间
+  timeBetweenEvictionRunsMillis: 60000         # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+  minEvictableIdleTimeMillis: 300000           # 配置一个连接在池中最小生存的时间，单位是毫秒
+  validationQuery: SELECT 1 FROM DUAL
+  testWhileIdle: true
+  testOnBorrow: false
+  testOnReturn: false
+  poolPreparedStatements: true
+  maxOpenPreparedStatements: 20
+
+  filters: stat,wall,log4j                     # 去掉后监控界面sql无法统计，wall用于防火墙
+  connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 # 慢SQL记录

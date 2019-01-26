@@ -1,0 +1,8 @@
+server.port: 8200
+
+spring:
+  profiles:
+    active: dev        # application-dev.yml
+    include: mvc, jdbc, redis
+
+package.type: war
