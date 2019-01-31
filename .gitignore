@@ -23,7 +23,7 @@ nbdist/
 
 # Gradle
 /**/.gradle/
-#gradle/
+gradle/
 
 # STS
 /**/.apt_generated
