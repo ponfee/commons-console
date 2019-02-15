@@ -48,8 +48,8 @@ public class DataSourceConfig {
     @SuppressWarnings("unchecked")
     @Bean("jdbcConfig")
     public Properties jdbcConfig() throws IOException {
-        PropertySourcesLoader propertiesLoader = new PropertySourcesLoader();
-        PropertySource<?> source = propertiesLoader.load(new ClassPathResource("application-jdbc.yml"));
+        PropertySourcesLoader propsLoader = new PropertySourcesLoader();
+        PropertySource<?> source = propsLoader.load(new ClassPathResource("application-jdbc.yml"));
         Properties jdbcConfig = new Properties();
         ((Map<String, String>) source.getSource()).entrySet().stream().filter(
             e -> Objects.nonNull(e.getKey()) && e.getKey().startsWith(PREFIX)
