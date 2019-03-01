@@ -79,18 +79,20 @@ public class RedisManagerServiceImpl implements RedisManagerService {
         } else {
             list = new LinkedList<>();
             for (RedisKey key : keys) {
-                if (ignoreKeyword) { // query infinity expire
+                // *：query infinity expire
+                if (ignoreKeyword) {
                     if ("INFINITY".equalsIgnoreCase(key.getExpire())) {
                         list.add(key);
-                    } else {
-                        continue;
                     }
+                    continue;
                 }
 
-                // query keyword
+                // *：query keyword
                 if (!ignoreExpire && !"INFINITY".equalsIgnoreCase(key.getExpire())) {
                     continue; // query infinity expire and key is not infinity
                 }
+
+                // *：normal
                 switch (Enums.ofIgnoreCase(MatchMode.class, matchmode, MatchMode.HEAD)) {
                     case LIKE:
                         if (key.contains(keyword)) {
