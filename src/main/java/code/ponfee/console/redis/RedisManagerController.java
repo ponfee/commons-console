@@ -64,9 +64,9 @@ public class RedisManagerController {
 
     @GetMapping("view")
     public void query4view(PageRequestParams params, HttpServletResponse resp) {
-        Table table = new Table(THEADS);
+        Table<RedisKey> table = new Table<>(THEADS, rk -> Collects.ofArray(rk, "key", "type", "expire"));
         Page<RedisKey> page = service.query4page(params);
-        page.process(row -> table.addRow(Collects.ofArray(row, "key", "type", "expire")));
+        page.process(row -> table.addRow(row));
         table.end();
         try (HtmlExporter exporter = new HtmlExporter()) {
             exporter.build(table);

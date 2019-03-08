@@ -74,7 +74,7 @@ public class DatabaseQueryController {
             return new BaseNode<>(orders, 0, orders, new Thead(h, tmeta, null));
         }).collect(Collectors.toList());
 
-        Table table = new Table(heads);
+        Table<Object[]> table = new Table<>(heads);
         table.setComment(errorMsg);
         page.process(row -> table.addRow(Collects.map2array(row)));
         table.end();
