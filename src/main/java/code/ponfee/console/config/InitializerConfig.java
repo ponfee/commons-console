@@ -21,7 +21,7 @@ import code.ponfee.commons.util.SpringContextHolder;
  */
 @Configuration
 @EnableScheduling
-public class InitializerConfig   {
+public class InitializerConfig {
 
     @Bean
     public SpringContextHolder springContextHolder() {
