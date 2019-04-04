@@ -1,6 +1,5 @@
 package code.ponfee.console.config;
 
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -17,7 +16,7 @@ import code.ponfee.commons.jedis.spring.KryoRedisSerializer;
  * @author Ponfee
  */
 @Configuration
-@EnableCaching
+//@EnableCaching
 public class RedisTemplateConfig {
 
     @Bean("strRedisTemplate")
