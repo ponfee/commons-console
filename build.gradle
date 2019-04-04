@@ -49,7 +49,7 @@ dependencies {
 
     compile 'mysql:mysql-connector-java:8.0.13'
     compile 'com.alibaba:druid:1.1.12'
-    compile 'org.springframework.data:spring-data-redis:1.8.17.RELEASE'
+    compile 'org.springframework.data:spring-data-redis:1.8.18.RELEASE'
     compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
 
     compile('code.ponfee:commons-core:1.16-SNAPSHOT') {
