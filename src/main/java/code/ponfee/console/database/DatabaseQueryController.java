@@ -77,7 +77,7 @@ public class DatabaseQueryController {
         Table<Object[]> table = new Table<>(heads);
         table.setComment(errorMsg);
         page.process(row -> table.addRow(Collects.map2array(row)));
-        table.end();
+        table.toEnd();
 
         try (HtmlExporter exporter = new HtmlExporter()) {
             exporter.build(table);

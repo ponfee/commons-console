@@ -67,7 +67,7 @@ public class RedisManagerController {
         Table<RedisKey> table = new Table<>(THEADS, rk -> Collects.ofArray(rk, "key", "type", "expire"));
         Page<RedisKey> page = service.query4page(params);
         page.process(row -> table.addRow(row));
-        table.end();
+        table.toEnd();
         try (HtmlExporter exporter = new HtmlExporter()) {
             exporter.build(table);
             PaginationHtmlBuilder builder = PaginationHtmlBuilder.newBuilder(
