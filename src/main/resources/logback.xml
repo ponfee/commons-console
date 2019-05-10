@@ -62,7 +62,6 @@
         </encoder>
     </appender>
 
-
     <!-- WARN级别 -->
     <appender name="FILE_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
