@@ -43,7 +43,7 @@ public class DatabaseQueryServiceImpl implements DatabaseQueryService {
             List<?> list = sqlMapper.selectList(sql, LinkedHashMap.class);
             return Page.of((List<LinkedHashMap<String, Object>>) list);
         } finally {
-            MultipleDataSourceContext.remove();
+            MultipleDataSourceContext.clear();
         }
     }
 
