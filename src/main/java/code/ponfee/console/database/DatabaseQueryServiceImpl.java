@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 
-import code.ponfee.commons.data.MultipleDataSourceContext;
+import code.ponfee.commons.data.lookup.MultipleDataSourceContext;
 import code.ponfee.commons.model.Page;
 import code.ponfee.commons.model.PageRequestParams;
 import code.ponfee.commons.mybatis.SqlMapper;

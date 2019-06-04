@@ -26,8 +26,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 
-import code.ponfee.commons.data.MultipleDataSource;
 import code.ponfee.commons.data.NamedDataSource;
+import code.ponfee.commons.data.lookup.MultipleFixedDataSource;
 import code.ponfee.commons.math.Numbers;
 
 /**
@@ -67,7 +67,7 @@ public class DataSourceConfig {
      * 配置读取spring数据源
      */
     @Bean
-    public MultipleDataSource dataSource(@Qualifier("jdbcConfig") Properties props) {
+    public MultipleFixedDataSource dataSource(@Qualifier("jdbcConfig") Properties props) {
         List<String> names = props.keySet().stream().map(key -> {
             Matcher matcher = PATTERN.matcher(key.toString());
             return matcher.find() ? matcher.group(1) : null;
@@ -89,7 +89,9 @@ public class DataSourceConfig {
             }
         }
 
-        return new MultipleDataSource(dataSources.toArray(new NamedDataSource[dataSources.size()]));
+        return new MultipleFixedDataSource
+            (dataSources.toArray(new NamedDataSource[dataSources.size()])
+        );
     }
 
     /**
