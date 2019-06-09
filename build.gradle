@@ -64,6 +64,16 @@ dependencies {
         exclude module: 'log4j-over-slf4j'
         exclude module: 'jcl-over-slf4j'
         exclude module: 'jul-to-slf4j'
+
+        exclude module: 'dom4j'
+        exclude module: 'hessian'
+        exclude module: 'fst'
+        exclude module: 'itextpdf'
+        exclude module: 'words-jdk16'
+        exclude module: 'antlr'
+        exclude module: 'chardet'
+        exclude module: 'cpdetector'
+        exclude module: 'third-jce'
     }
 
     compile "org.springframework:spring-tx:${springVersion}"
