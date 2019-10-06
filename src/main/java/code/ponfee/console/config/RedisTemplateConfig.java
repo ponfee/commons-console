@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import code.ponfee.commons.jedis.spring.BytesRedisSerializer;
+import code.ponfee.commons.jedis.spring.ByteArrayRedisSerializer;
 import code.ponfee.commons.jedis.spring.KryoRedisSerializer;
 
 /**
@@ -48,7 +48,7 @@ public class RedisTemplateConfig {
         RedisTemplate<String, byte[]> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new BytesRedisSerializer());
+        template.setValueSerializer(new ByteArrayRedisSerializer());
 
         template.setEnableTransactionSupport(false);
         template.setExposeConnection(false);
