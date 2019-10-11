@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import code.ponfee.commons.collect.Collects;
 import code.ponfee.commons.export.HtmlExporter;
 import code.ponfee.commons.export.Table;
 import code.ponfee.commons.export.Thead;
@@ -31,6 +30,7 @@ import code.ponfee.commons.model.PageRequestParams;
 import code.ponfee.commons.model.PaginationHtmlBuilder;
 import code.ponfee.commons.model.Result;
 import code.ponfee.commons.model.ResultCode;
+import code.ponfee.commons.reflect.BeanConverts;
 import code.ponfee.commons.tree.BaseNode;
 import code.ponfee.commons.util.Enums;
 import code.ponfee.commons.web.WebUtils;
@@ -64,7 +64,7 @@ public class RedisManagerController {
 
     @GetMapping("view")
     public void query4view(PageRequestParams params, HttpServletResponse resp) {
-        Table<RedisKey> table = new Table<>(THEADS, rk -> Collects.ofArray(rk, "key", "type", "expire"));
+        Table<RedisKey> table = new Table<>(THEADS, rk -> BeanConverts.toArray(rk, "key", "type", "expire"));
         Page<RedisKey> page = service.query4page(params);
         page.process(row -> table.addRow(row));
         table.toEnd();
