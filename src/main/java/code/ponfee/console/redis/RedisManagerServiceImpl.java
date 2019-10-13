@@ -180,14 +180,17 @@ public class RedisManagerServiceImpl implements RedisManagerService {
     }
 
     @Override
-    @SuppressWarnings("unlikely-arg-type")
     public void delete(String... redisKeys) {
         if (ArrayUtils.isEmpty(redisKeys)) {
-            return ;
+            return;
         }
+
         List<String> list = Arrays.asList(redisKeys);
         redis.delete(list);
-        keys.removeAll(list);
+
+        list.stream()
+            .filter(StringUtils::isNotBlank)
+            .forEach(x -> keys.remove(new RedisKey(x)));
     }
 
     @Override
