@@ -48,7 +48,7 @@ public class DatabaseQueryController {
     @GetMapping("page")
     public Result<Page<Object[]>> query4page(PageRequestParams params) {
         return Result.success(
-            service.query4page(params).transform(Collects::map2array)
+            service.query4page(params).map(Collects::map2array)
         );
     }
 
@@ -76,7 +76,7 @@ public class DatabaseQueryController {
 
         Table<Object[]> table = new Table<>(heads);
         table.setComment(errorMsg);
-        page.process(row -> table.addRow(Collects.map2array(row)));
+        page.forEach(row -> table.addRow(Collects.map2array(row)));
         table.toEnd();
 
         try (HtmlExporter exporter = new HtmlExporter()) {
