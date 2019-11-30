@@ -141,10 +141,10 @@ public class DataSourceConfig {
         ds.setTimeBetweenEvictionRunsMillis((Integer) props.get("timeBetweenEvictionRunsMillis"));
         ds.setMinEvictableIdleTimeMillis((Integer) props.get("minEvictableIdleTimeMillis"));
         ds.setValidationQuery(props.getProperty("validationQuery"));
-        ds.setTestWhileIdle(Numbers.toWrapBoolean(props.get("testWhileIdle"), false));
-        ds.setTestOnBorrow(Numbers.toWrapBoolean(props.get("testOnBorrow"), false));
-        ds.setTestOnReturn(Numbers.toWrapBoolean(props.get("testOnReturn"), false));
-        ds.setPoolPreparedStatements(Numbers.toWrapBoolean(props.get("poolPreparedStatements"), false));
+        ds.setTestWhileIdle(Numbers.toBoolean(props.get("testWhileIdle"), false));
+        ds.setTestOnBorrow(Numbers.toBoolean(props.get("testOnBorrow"), false));
+        ds.setTestOnReturn(Numbers.toBoolean(props.get("testOnReturn"), false));
+        ds.setPoolPreparedStatements(Numbers.toBoolean(props.get("poolPreparedStatements"), false));
         ds.setMaxOpenPreparedStatements((Integer) props.get("maxOpenPreparedStatements"));
         try {
             ds.setFilters(props.getProperty("filters"));

@@ -78,7 +78,7 @@ public class RedisManagerController {
                    .form(buildForm(params))
                    .params(params)
                    .foot(buildFoot());
-            WebUtils.response(resp, ContentType.TEXT_HTML.value(), builder.build(), Files.UTF_8);
+            WebUtils.response(resp, ContentType.TEXT_HTML, builder.build(), Files.UTF_8);
         } 
     }
 
