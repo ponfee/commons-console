@@ -1,5 +1,5 @@
 buildscript {
-    def springBootVersion = '1.5.21.RELEASE'
+    def springBootVersion = '1.5.22.RELEASE'
     repositories {
         maven { url localMavenRepo }
         mavenLocal()
@@ -36,7 +36,7 @@ bootRun {
 }
 
 // 用def定义的变量，使用时需要用双引号"，而不能用单引号'
-def springVersion = '4.3.24.RELEASE'
+def springVersion = '4.3.26.RELEASE'
 dependencies {
     // spring dependency
     //implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -48,9 +48,9 @@ dependencies {
     //compile 'org.springframework.boot:spring-boot-devtools' // 热部署
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 
-    compile 'mysql:mysql-connector-java:8.0.16'
-    compile 'com.alibaba:druid:1.1.16'
-    compile 'org.springframework.data:spring-data-redis:1.8.22.RELEASE'
+    compile 'mysql:mysql-connector-java:8.0.19'
+    compile 'com.alibaba:druid:1.1.21'
+    compile 'org.springframework.data:spring-data-redis:1.8.23.RELEASE'
     compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
 
     compile('code.ponfee:commons-core:2.2-SNAPSHOT') {
@@ -83,7 +83,7 @@ dependencies {
     // sessionFactory.setVfs(SpringBootVFS.class);
     //compile 'com.github.pagehelper:pagehelper-spring-boot-starter:1.2.10'
 
-    testCompile  'junit:junit:4.12'
+    testCompile  'junit:junit:4.13'
 }
 
 compileJava.dependsOn(processResources {
