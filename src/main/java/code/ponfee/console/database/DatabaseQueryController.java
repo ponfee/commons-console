@@ -56,9 +56,9 @@ public class DatabaseQueryController implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         /*DruidDataSource datasource = new DruidDataSource();
         datasource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        datasource.setUrl("jdbc:mysql://10.202.4.26:3307/ddtm?useUnicode=true&characterEncoding=UTF8");
-        datasource.setUsername("ddt-dev");
-        datasource.setPassword("ddt-dev123456");
+        datasource.setUrl("");
+        datasource.setUsername("");
+        datasource.setPassword("");
 
         MultipletCachedDataSource mcds = SpringContextHolder.getBean(MultipletCachedDataSource.class);
         mcds.addIfAbsent("test-dynamic-add", datasource);*/
@@ -143,7 +143,7 @@ public class DatabaseQueryController implements InitializingBean {
     }
 
     private String buildFoot(String contextPath) {
-        return new StringBuilder(512)
+        return new StringBuilder(1024)
             .append("<script>\n")
             .append("String.prototype.rightPad = function(len, pad) {\n")
             .append("  return this + new Array(len - this.length + 1).join(pad, '');\n")
