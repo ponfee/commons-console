@@ -54,17 +54,7 @@ dependencies {
     compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
 
     compile('code.ponfee:commons-core:2.2-SNAPSHOT') {
-        exclude module: 'log4j-api'
-        exclude module: 'log4j-core'
-        exclude module: 'log4j-slf4j-impl'
-        exclude module: 'log4j-jcl'
-        exclude module: 'log4j-jul'
-        exclude module: 'log4j-web'
-        exclude module: 'slf4j-api'
-        exclude module: 'log4j-over-slf4j'
-        exclude module: 'jcl-over-slf4j'
-        exclude module: 'jul-to-slf4j'
-
+        exclude group: 'org.apache.logging.log4j'
         exclude module: 'dom4j'
         exclude module: 'hessian'
         exclude module: 'fst'
@@ -76,6 +66,7 @@ dependencies {
         exclude module: 'third-jce'
     }
     compile('code.ponfee:commons-jedis:1.0-SNAPSHOT')
+    compile "ch.qos.logback:logback-classic:1.2.3"
     compile "org.springframework:spring-tx:${springVersion}"
     compile "org.springframework:spring-jdbc:$springVersion"
 
