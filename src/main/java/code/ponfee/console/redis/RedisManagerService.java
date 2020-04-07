@@ -1,5 +1,7 @@
 package code.ponfee.console.redis;
 
+import java.util.Map;
+
 import code.ponfee.commons.model.Page;
 import code.ponfee.commons.model.PageRequestParams;
 
@@ -12,11 +14,13 @@ public interface RedisManagerService {
 
     Page<RedisKey> query4page(PageRequestParams params);
 
-    void addOrUpdateRedisEntry(String key, String value, Long expire, 
-                               String dataType, String valueType);
+    void addOrUpdateRedisEntry(Map<String, Object> params);
 
     void delete(String... keys);
 
     void refresh();
 
+    void refreshForce();
+
+    void flushAll();
 }

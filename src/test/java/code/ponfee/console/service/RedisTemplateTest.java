@@ -18,7 +18,7 @@ public class RedisTemplateTest extends BaseTest<RedisTemplate<String, byte[]>> {
 
     @Test
     public void deleteAll() throws IOException, InterruptedException {
-        getBean().delete(getBean().keys("*"));
+        //getBean().delete(getBean().keys("*"));
         System.out.println(getBean().keys("*"));
     }
 

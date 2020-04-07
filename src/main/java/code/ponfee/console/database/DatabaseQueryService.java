@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import code.ponfee.commons.model.Page;
 import code.ponfee.commons.model.PageRequestParams;
+import code.ponfee.commons.model.Result;
 
 /**
  * Database dynamic query service interface
@@ -12,6 +13,6 @@ import code.ponfee.commons.model.PageRequestParams;
  */
 public interface DatabaseQueryService {
 
-    Page<LinkedHashMap<String, Object>> query4page(PageRequestParams params);
+    Result<Page<LinkedHashMap<String, Object>>> query4page(PageRequestParams params);
 
 }

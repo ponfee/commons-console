@@ -75,7 +75,7 @@ dependencies {
         exclude module: 'cpdetector'
         exclude module: 'third-jce'
     }
-
+    compile('code.ponfee:commons-jedis:1.0-SNAPSHOT')
     compile "org.springframework:spring-tx:${springVersion}"
     compile "org.springframework:spring-jdbc:$springVersion"
 
