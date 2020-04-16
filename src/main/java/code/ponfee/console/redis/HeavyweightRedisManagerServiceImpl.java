@@ -115,12 +115,14 @@ public class HeavyweightRedisManagerServiceImpl extends AbstractRedisManagerServ
         refreshKeys();
     }
 
+    // 分布式（多节点）环境当路由到其它节点会没有生效，需要刷新
     @Override
     protected void onAddOrUpdate(RedisKey redisKey) {
         redisKeys.remove(redisKey);
         redisKeys.add(redisKey);
     }
 
+    // 分布式（多节点）环境当路由到其它节点会没有生效，需要刷新
     @Override
     protected void onDelete(List<String> keys) {
         keys.stream()

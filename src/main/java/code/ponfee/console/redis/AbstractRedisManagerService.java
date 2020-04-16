@@ -26,12 +26,12 @@ import org.springframework.data.redis.serializer.SerializationException;
 import code.ponfee.commons.exception.Throwables;
 import code.ponfee.commons.json.Jsons;
 import code.ponfee.commons.math.Numbers;
-import code.ponfee.commons.model.ExtendedHashMap;
 import code.ponfee.commons.model.Page;
 import code.ponfee.commons.model.PageBoundsResolver;
 import code.ponfee.commons.model.PageBoundsResolver.PageBounds;
 import code.ponfee.commons.model.PageHandler;
 import code.ponfee.commons.model.PageRequestParams;
+import code.ponfee.commons.model.TypedMapWrapper;
 import code.ponfee.commons.util.Enums;
 
 /**
@@ -79,7 +79,7 @@ public abstract class AbstractRedisManagerService implements RedisManagerService
 
     @Override
     public void addOrUpdateRedisEntry(Map<String, Object> params) {
-        ExtendedHashMap<String, Object> map = new ExtendedHashMap<>(params);
+        TypedMapWrapper<String, Object> map = new TypedMapWrapper<>(params);
         String key = map.getRequireString("key");
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("Redis key cannot be null.");

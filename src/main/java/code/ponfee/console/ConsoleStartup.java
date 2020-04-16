@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  *
  * @author Ponfee
  */
+//EmbeddedServletContainerAutoConfiguration
 @SpringBootApplication(exclude = {
     DataSourceAutoConfiguration.class,
 })
