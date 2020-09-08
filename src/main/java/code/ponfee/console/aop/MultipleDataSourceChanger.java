@@ -13,6 +13,8 @@ import code.ponfee.commons.data.MultipleDataSourceAspect;
 @Aspect
 public class MultipleDataSourceChanger extends MultipleDataSourceAspect {
 
+    private static final int ORDINAL = Ordered.HIGHEST_PRECEDENCE + 1;
+
     @Around(value = "execution(public * code.ponfee.console..*..*Impl..*(..)) && @annotation(dsn)", argNames = "pjp,dsn")
     @Override
     public Object doAround(ProceedingJoinPoint pjp, DataSourceNaming dsn) throws Throwable {
@@ -21,7 +23,7 @@ public class MultipleDataSourceChanger extends MultipleDataSourceAspect {
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE + 1;
+        return ORDINAL;
     }
 
 }
