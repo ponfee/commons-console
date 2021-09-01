@@ -1,7 +1,9 @@
 package code.ponfee.console.config;
 
-import javax.sql.DataSource;
-
+import code.ponfee.commons.data.NamedDataSource;
+import code.ponfee.commons.data.lookup.MultipleCachedDataSource;
+import com.alibaba.druid.support.http.StatViewServlet;
+import com.alibaba.druid.support.http.WebStatFilter;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -9,17 +11,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
-
-import code.ponfee.commons.data.NamedDataSource;
-import code.ponfee.commons.data.lookup.MultipletCachedDataSource;
-import code.ponfee.commons.data.lookup.PropertiedNamedDataSourceArray;
+import javax.sql.DataSource;
 
 /**
  * Druid监控配置
  * 
- * http://localhost:8200/druid/login.html
+ * http://localhost:8100/druid/login.html
  *
  * @author Ponfee
  */
@@ -30,10 +27,9 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
         factory.setResources(new ClassPathResource("application-jdbc.yml"));
-        PropertiedNamedDataSourceArray propertiedDs = new PropertiedNamedDataSourceArray("datasource", factory.getObject());
-        NamedDataSource[] datasources = propertiedDs.getArray();
-        propertiedDs.close();
-        return new MultipletCachedDataSource(1800, datasources);
+        factory.afterPropertiesSet();
+        NamedDataSource[] ds = NamedDataSource.build("datasource", factory.getObject());
+        return new MultipleCachedDataSource(1800, ds);
     }
 
     /**
@@ -61,7 +57,7 @@ public class DataSourceConfig {
     /**
      * Druid监控过滤器配置规则
      */
-    @Bean()
+    @Bean
     public FilterRegistrationBean druidStartFilter() {
         FilterRegistrationBean frb = new FilterRegistrationBean(new WebStatFilter());
 

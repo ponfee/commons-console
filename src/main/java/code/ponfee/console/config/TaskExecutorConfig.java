@@ -8,18 +8,14 @@
 
 package code.ponfee.console.config;
 
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-
-import org.springframework.context.annotation.Bean;
+import code.ponfee.commons.concurrent.NamedThreadFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import code.ponfee.commons.concurrent.NamedThreadFactory;
-import code.ponfee.commons.concurrent.ThreadPoolExecutors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * TaskExecutorConfig
@@ -27,19 +23,8 @@ import code.ponfee.commons.concurrent.ThreadPoolExecutors;
  * @author Ponfee
  */
 @Configuration
-@EnableScheduling
+@EnableScheduling // To support @Scheduled(cron = "0/2 * * * * ?") annotation
 public class TaskExecutorConfig implements SchedulingConfigurer {
-
-    @Bean(name = "threadPoolTaskExecutor")
-    public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
-        ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
-        pool.setKeepAliveSeconds(60);
-        pool.setCorePoolSize(4);
-        pool.setMaxPoolSize(32);
-        pool.setQueueCapacity(0);
-        pool.setRejectedExecutionHandler(ThreadPoolExecutors.CALLER_RUN);
-        return pool;
-    }
 
     /**
      * 配置定时任务线程池大小

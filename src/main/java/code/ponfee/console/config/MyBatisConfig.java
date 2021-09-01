@@ -1,17 +1,15 @@
 package code.ponfee.console.config;
 
-import javax.sql.DataSource;
-
+import code.ponfee.commons.mybatis.SqlMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import code.ponfee.commons.mybatis.SqlMapper;
+import javax.sql.DataSource;
 
 /**
  * MyBatis配置
@@ -19,10 +17,10 @@ import code.ponfee.commons.mybatis.SqlMapper;
  * @author Ponfee
  */
 @Configuration
+@AutoConfigureAfter(DataSourceConfig.class)
 public class MyBatisConfig {
 
-    private static final PathMatchingResourcePatternResolver RESOLVER = 
-        new PathMatchingResourcePatternResolver();
+    private static final PathMatchingResourcePatternResolver RESOLVER = new PathMatchingResourcePatternResolver();
 
     @Bean("sqlSessionFactory")
     public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) throws Exception {
@@ -39,16 +37,21 @@ public class MyBatisConfig {
     }
 
     @Bean("sqlSessionTemplate")
-    @DependsOn("sqlSessionFactory")
-    public SqlSessionTemplate sqlSessionTemplate(
-        @Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
     @Bean("sqlMapper")
-    @DependsOn("sqlSessionTemplate")
     public SqlMapper sqlMapper(SqlSessionTemplate sqlSessionTemplate) {
         return new SqlMapper(sqlSessionTemplate);
     }
 
+    /*@Bean("mapperScannerConfigurer")
+    @DependsOn("sqlMapper")
+    public MapperScannerConfigurer tkMapperScannerConfigurer() {
+        MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+        mapperScannerConfigurer.setBasePackage("code.ponfee.console.dao.mapper");
+        mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
+        return mapperScannerConfigurer;
+    }*/
 }

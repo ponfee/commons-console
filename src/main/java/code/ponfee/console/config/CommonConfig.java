@@ -8,11 +8,11 @@
 
 package code.ponfee.console.config;
 
+import code.ponfee.commons.concurrent.ThreadPoolExecutors;
+import code.ponfee.commons.util.SpringContextHolder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
-
-import code.ponfee.commons.util.SpringContextHolder;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
  * InitializerConfig
@@ -20,11 +20,21 @@ import code.ponfee.commons.util.SpringContextHolder;
  * @author Ponfee
  */
 @Configuration
-@EnableScheduling
-public class InitializerConfig {
+public class CommonConfig {
 
-    @Bean
+    @Bean("springContextHolder")
     public SpringContextHolder springContextHolder() {
         return new SpringContextHolder();
+    }
+
+    @Bean("threadPoolTaskExecutor")
+    public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
+        pool.setKeepAliveSeconds(60);
+        pool.setCorePoolSize(4);
+        pool.setMaxPoolSize(32);
+        pool.setQueueCapacity(0);
+        pool.setRejectedExecutionHandler(ThreadPoolExecutors.CALLER_RUN);
+        return pool;
     }
 }

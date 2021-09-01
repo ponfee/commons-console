@@ -30,7 +30,7 @@ import code.ponfee.commons.export.Tmeta.Type;
 import code.ponfee.commons.http.ContentType;
 import code.ponfee.commons.io.Files;
 import code.ponfee.commons.model.Page;
-import code.ponfee.commons.model.PageRequestParams;
+import code.ponfee.commons.model.PageParameter;
 import code.ponfee.commons.model.PaginationHtmlBuilder;
 import code.ponfee.commons.model.Result;
 import code.ponfee.commons.model.ResultCode;
@@ -65,7 +65,7 @@ public class DatabaseQueryController implements InitializingBean {
     }
 
     @GetMapping("page")
-    public Result<Page<Object[]>> query4page(PageRequestParams params) {
+    public Result<Page<Object[]>> query4page(PageParameter params) {
         if (StringUtils.isAnyEmpty(params.getString("datasource"), params.getString("sql"))) {
             return Result.failure(ResultCode.NOT_FOUND.getCode(), null, Page.empty());
         }
@@ -80,7 +80,7 @@ public class DatabaseQueryController implements InitializingBean {
     // Oracle: select table_name from tabs
     //  Mysql: select table_name from INFORMATION_SCHEMA.TABLES
     @GetMapping("view")
-    public void query4view(PageRequestParams params, HttpServletRequest req, HttpServletResponse resp) {
+    public void query4view(PageParameter params, HttpServletRequest req, HttpServletResponse resp) {
         Page<LinkedHashMap<String, Object>> page;
         String errorMsg;
         Stream<String> head;
@@ -127,7 +127,7 @@ public class DatabaseQueryController implements InitializingBean {
     }
 
     // ------------------------------------------------------------------------private methods
-    private String buildForm(PageRequestParams params) {
+    private String buildForm(PageParameter params) {
         StringBuilder builder = new StringBuilder(2048)
             .append("<select name=\"datasource\">\n");
         for (String datasource : MultipleDataSourceContext.listDataSourceNames()) {

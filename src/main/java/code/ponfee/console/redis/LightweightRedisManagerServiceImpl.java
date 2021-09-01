@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import code.ponfee.commons.model.PageParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.Cursor;
@@ -11,7 +12,6 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.ScanOptions;
 
 import code.ponfee.commons.io.Closeables;
-import code.ponfee.commons.model.PageRequestParams;
 import code.ponfee.commons.util.Enums;
 
 /**
@@ -23,7 +23,7 @@ import code.ponfee.commons.util.Enums;
 public class LightweightRedisManagerServiceImpl extends AbstractRedisManagerService {
 
     @Override
-    public List<RedisKey> query4list(PageRequestParams params) {
+    public List<RedisKey> query4list(PageParameter params) {
         MatchMode matchMode = Enums.ofIgnoreCase(
             MatchMode.class, params.getString("matchmode"), MatchMode.LIKE
         );
@@ -33,13 +33,13 @@ public class LightweightRedisManagerServiceImpl extends AbstractRedisManagerServ
                 if (StringUtils.isEmpty(key)) {
                     return Collections.emptyList();
                 }
-                return redis.execute((RedisCallback<List<RedisKey>>) conn -> {
+                return normalRedis.execute((RedisCallback<List<RedisKey>>) conn -> {
                     RedisKey rk = getAsString(conn, key.getBytes());
                     return rk.getType() == DataType.NONE ? null : Collections.singletonList(rk);
                 });
             default:
                 int pageSize = params.getPageSize();
-                return redis.execute(
+                return normalRedis.execute(
                     (RedisCallback<List<RedisKey>>) (conn -> {
                         Cursor<byte[]> cursor = conn.scan(
                             ScanOptions.scanOptions().match(key).count(pageSize).build()

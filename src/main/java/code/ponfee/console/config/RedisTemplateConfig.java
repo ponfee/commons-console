@@ -1,5 +1,6 @@
 package code.ponfee.console.config;
 
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -16,43 +17,33 @@ import code.ponfee.commons.jedis.spring.KryoRedisSerializer;
  * @author Ponfee
  */
 @Configuration
-//@EnableCaching
+@EnableCaching // To support @Cacheable/@CachePut/@CacheEvict annotation
 public class RedisTemplateConfig {
 
-    @Bean("strRedisTemplate")
-    public RedisTemplate<String, String> strRedisTemplate(
-        RedisConnectionFactory redisConnectionFactory) {
+    @Bean("stringRedis")
+    public RedisTemplate<String, String> stringRedis(RedisConnectionFactory redisConnectionFactory) {
         StringRedisTemplate template = new StringRedisTemplate(redisConnectionFactory);
-        template.setEnableTransactionSupport(false);
+        /*template.setEnableTransactionSupport(false);
         template.setExposeConnection(false);
+        template.afterPropertiesSet();*/
         return template;
     }
 
-    @Bean("redisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(
-        RedisConnectionFactory redisConnectionFactory) {
+    @Bean("normalRedis")
+    public RedisTemplate<String, Object> normalRedis(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new KryoRedisSerializer<>());
-
-        template.setEnableTransactionSupport(false);
-        template.setExposeConnection(false);
-        template.afterPropertiesSet();
         return template;
     }
 
-    @Bean("bytRedisTemplate")
-    public RedisTemplate<String, byte[]> bytRedisTemplate(
-        RedisConnectionFactory redisConnectionFactory) {
+    @Bean("bytesRedis")
+    public RedisTemplate<String, byte[]> bytesRedis(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, byte[]> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new ByteArrayRedisSerializer());
-
-        template.setEnableTransactionSupport(false);
-        template.setExposeConnection(false);
-        template.afterPropertiesSet();
         return template;
     }
 

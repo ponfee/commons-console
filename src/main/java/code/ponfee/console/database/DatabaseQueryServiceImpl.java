@@ -13,7 +13,7 @@ import com.github.pagehelper.PageHelper;
 
 import code.ponfee.commons.data.DataSourceNaming;
 import code.ponfee.commons.model.Page;
-import code.ponfee.commons.model.PageRequestParams;
+import code.ponfee.commons.model.PageParameter;
 import code.ponfee.commons.model.Result;
 import code.ponfee.commons.model.ResultCode;
 import code.ponfee.commons.mybatis.SqlMapper;
@@ -31,9 +31,9 @@ public class DatabaseQueryServiceImpl implements DatabaseQueryService {
     private @Resource SqlMapper sqlMapper;
 
     @SuppressWarnings("unchecked")
-    @DataSourceNaming("#root[0].getRequireString('datasource')") // 指定数据源：@DataSourceNaming("'default'")
+    @DataSourceNaming("#root[0].getRequiredString('datasource')") // 指定数据源：@DataSourceNaming("'default'")
     @Override
-    public Result<Page<LinkedHashMap<String, Object>>> query4page(PageRequestParams params) {
+    public Result<Page<LinkedHashMap<String, Object>>> query4page(PageParameter params) {
         String sql;
         if (StringUtils.isBlank(sql = params.getString("sql"))) {
             return Result.failure(ResultCode.BAD_REQUEST, "Sql cannot be blank.");

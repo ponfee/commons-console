@@ -8,24 +8,33 @@
 
 package code.ponfee.console.task;
 
-import org.springframework.context.annotation.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 /**
- * 
+ * 定时任务示例
+ *
  * @author Ponfee
  */
-@Configuration
+@Component
 public class ScheduleTask {
 
-    //@Scheduled(cron = "0/2 * * * * ?")
+    protected static Logger logger = LoggerFactory.getLogger(ScheduleTask.class);
+
+    @Scheduled(cron = "0/2 * * * * ?")
     public void test1() {
-        System.out.println("task start");
+        logger.debug("task start");
+        logger.info("info log");
+        logger.warn("warn log");
+        logger.error("error log");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("task end");
+        logger.debug("task end");
     }
 
 }

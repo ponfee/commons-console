@@ -1,5 +1,20 @@
 package code.ponfee.console.redis;
 
+import code.ponfee.commons.concurrent.MultithreadExecutor;
+import code.ponfee.commons.io.Closeables;
+import code.ponfee.commons.model.PageParameter;
+import code.ponfee.commons.util.Enums;
+import com.google.common.base.Stopwatch;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.connection.DataType;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -10,24 +25,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.connection.DataType;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Service;
-
-import com.google.common.base.Stopwatch;
-
-import code.ponfee.commons.concurrent.MultithreadExecutor;
-import code.ponfee.commons.io.Closeables;
-import code.ponfee.commons.model.PageRequestParams;
-import code.ponfee.commons.util.Enums;
 
 /**
  * Heavyweight redis manager service implementation
@@ -47,7 +44,7 @@ public class HeavyweightRedisManagerServiceImpl extends AbstractRedisManagerServ
     private @Resource ThreadPoolTaskExecutor taskExecutor;
 
     @Override
-    public List<RedisKey> query4list(PageRequestParams params) {
+    public List<RedisKey> query4list(PageParameter params) {
         if (redisKeys.isEmpty()) {
             return Collections.emptyList();
         }
@@ -147,7 +144,7 @@ public class HeavyweightRedisManagerServiceImpl extends AbstractRedisManagerServ
             Stopwatch watch = Stopwatch.createStarted();
 
             AtomicInteger count = new AtomicInteger(0);
-            redis.execute((RedisCallback<Void>) (conn -> {
+            normalRedis.execute((RedisCallback<Void>) (conn -> {
                 Cursor<byte[]> cursor = conn.scan(
                     ScanOptions.scanOptions().match("*").count(BATCH_SIZE).build()
                 );
@@ -194,7 +191,7 @@ public class HeavyweightRedisManagerServiceImpl extends AbstractRedisManagerServ
 
         @Override
         public List<RedisKey> call() {
-            List<Object> list = redis.executePipelined(
+            List<Object> list = normalRedis.executePipelined(
                 (RedisCallback<Void>) (conn -> {
                     for (byte[] key : keys) {
                         conn.type(key);

@@ -30,7 +30,7 @@ import code.ponfee.commons.model.Page;
 import code.ponfee.commons.model.PageBoundsResolver;
 import code.ponfee.commons.model.PageBoundsResolver.PageBounds;
 import code.ponfee.commons.model.PageHandler;
-import code.ponfee.commons.model.PageRequestParams;
+import code.ponfee.commons.model.PageParameter;
 import code.ponfee.commons.model.TypedMapWrapper;
 import code.ponfee.commons.util.Enums;
 
@@ -44,16 +44,23 @@ public abstract class AbstractRedisManagerService implements RedisManagerService
     protected static Logger logger = LoggerFactory.getLogger(AbstractRedisManagerService.class);
     private static final int MAX_VALUE_LENGTH = 200;
 
-    protected @Resource RedisTemplate<String, Object> redis;
+    @Resource(name = "stringRedis")
+    protected RedisTemplate<String, String> stringRedis;
 
-    protected abstract List<RedisKey> query4list(PageRequestParams params);
+    @Resource(name = "normalRedis")
+    protected RedisTemplate<String, Object> normalRedis;
+
+    @Resource(name = "bytesRedis")
+    protected RedisTemplate<String, byte[]> bytesRedis;
+
+    protected abstract List<RedisKey> query4list(PageParameter params);
 
     protected abstract void onAddOrUpdate(RedisKey redisKey);
 
     protected abstract void onDelete(List<String> keys);
 
     @Override
-    public Page<RedisKey> query4page(PageRequestParams params) {
+    public Page<RedisKey> query4page(PageParameter params) {
         List<RedisKey> list = query4list(params);
 
         if (CollectionUtils.isEmpty(list)) {
@@ -80,47 +87,47 @@ public abstract class AbstractRedisManagerService implements RedisManagerService
     @Override
     public void addOrUpdateRedisEntry(Map<String, Object> params) {
         TypedMapWrapper<String, Object> map = new TypedMapWrapper<>(params);
-        String key = map.getRequireString("key");
+        String key = map.getRequiredString("key");
         if (StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("Redis key cannot be null.");
         }
         key = key.trim();
 
         Object value = parseValue(
-            map.getString("value"), map.getRequireString("valueType"), redis.getValueSerializer()
+            map.getString("value"), map.getRequiredString("valueType"), normalRedis.getValueSerializer()
         );
         long expire = Numbers.toLong(map.get("expire"), -1);
-        DataType type = parseDataType(key, map.getRequireString("dataType"));
+        DataType type = parseDataType(key, map.getRequiredString("dataType"));
         switch (type) {
             case STRING:
                 if (expire > 0) {
-                    redis.opsForValue().set(key, value, expire, TimeUnit.SECONDS);
+                    normalRedis.opsForValue().set(key, value, expire, TimeUnit.SECONDS);
                 } else {
-                    redis.opsForValue().set(key, value);
+                    normalRedis.opsForValue().set(key, value);
                 }
                 break;
             case LIST:
-                redis.opsForList().rightPush(key, value);
+                normalRedis.opsForList().rightPush(key, value);
                 if (expire > 0) {
-                    redis.expire(key, expire, TimeUnit.SECONDS);
+                    normalRedis.expire(key, expire, TimeUnit.SECONDS);
                 }
                 break;
             case SET:
-                redis.opsForSet().add(key, value);
+                normalRedis.opsForSet().add(key, value);
                 if (expire > 0) {
-                    redis.expire(key, expire, TimeUnit.SECONDS);
+                    normalRedis.expire(key, expire, TimeUnit.SECONDS);
                 }
                 break;
             case ZSET:
-                redis.opsForZSet().add(key, value, map.getRequireDouble("score"));
+                normalRedis.opsForZSet().add(key, value, map.getRequiredDouble("score"));
                 if (expire > 0) {
-                    redis.expire(key, expire, TimeUnit.SECONDS);
+                    normalRedis.expire(key, expire, TimeUnit.SECONDS);
                 }
                 break;
             case HASH:
-                redis.opsForHash().put(key, map.getRequireString("hashKey"), value);
+                normalRedis.opsForHash().put(key, map.getRequiredString("hashKey"), value);
                 if (expire > 0) {
-                    redis.expire(key, expire, TimeUnit.SECONDS);
+                    normalRedis.expire(key, expire, TimeUnit.SECONDS);
                 }
                 break;
             default:
@@ -139,11 +146,11 @@ public abstract class AbstractRedisManagerService implements RedisManagerService
         List<String> deletes = new ArrayList<>(redisKeys.length);
         for (String key : redisKeys) {
             if (key.contains("*")) {
-                Set<String> keys = redis.keys(key);
-                redis.delete(keys);
+                Set<String> keys = normalRedis.keys(key);
+                normalRedis.delete(keys);
                 deletes.addAll(keys);
             } else {
-                redis.delete(key);
+                normalRedis.delete(key);
                 deletes.add(key);
             }
         }
@@ -153,7 +160,7 @@ public abstract class AbstractRedisManagerService implements RedisManagerService
 
     @Override
     public void flushAll() {
-        redis.execute((RedisCallback<Void>) action -> {
+        normalRedis.execute((RedisCallback<Void>) action -> {
             action.flushAll();
             return null;
         });
@@ -173,8 +180,8 @@ public abstract class AbstractRedisManagerService implements RedisManagerService
                 break;
             case STRING:
                 try {
-                    value = redis.execute(
-                        (RedisCallback<String>) c -> deserializeAsString(redis.getValueSerializer(), c.get(key))
+                    value = normalRedis.execute(
+                        (RedisCallback<String>) c -> deserializeAsString(normalRedis.getValueSerializer(), c.get(key))
                     );
                     if (value != null && value.length() > MAX_VALUE_LENGTH) {
                         value = value.substring(0, MAX_VALUE_LENGTH) + "...";
@@ -189,7 +196,7 @@ public abstract class AbstractRedisManagerService implements RedisManagerService
                 break;
         }
         return new RedisKey(
-            deserializeAsString(redis.getKeySerializer(), key), dataType, value, ttl
+            deserializeAsString(normalRedis.getKeySerializer(), key), dataType, value, ttl
         );
     }
 
@@ -208,7 +215,7 @@ public abstract class AbstractRedisManagerService implements RedisManagerService
     }
 
     private DataType parseDataType(String key, String dataType) {
-        DataType actual = Optional.ofNullable(redis.type(key))
+        DataType actual = Optional.ofNullable(normalRedis.type(key))
                                   .filter(this::isNotNull)
                                   .orElse(DataType.STRING);
         if (StringUtils.isEmpty(dataType)) {

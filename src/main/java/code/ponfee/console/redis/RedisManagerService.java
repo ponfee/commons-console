@@ -3,7 +3,7 @@ package code.ponfee.console.redis;
 import java.util.Map;
 
 import code.ponfee.commons.model.Page;
-import code.ponfee.commons.model.PageRequestParams;
+import code.ponfee.commons.model.PageParameter;
 
 /**
  * Redis manager service interface
@@ -12,7 +12,7 @@ import code.ponfee.commons.model.PageRequestParams;
  */
 public interface RedisManagerService {
 
-    Page<RedisKey> query4page(PageRequestParams params);
+    Page<RedisKey> query4page(PageParameter params);
 
     void addOrUpdateRedisEntry(Map<String, Object> params);
 

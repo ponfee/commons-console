@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import code.ponfee.commons.model.PageParameter;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,7 +26,6 @@ import code.ponfee.commons.export.Tmeta.Type;
 import code.ponfee.commons.http.ContentType;
 import code.ponfee.commons.io.Files;
 import code.ponfee.commons.model.Page;
-import code.ponfee.commons.model.PageRequestParams;
 import code.ponfee.commons.model.PaginationHtmlBuilder;
 import code.ponfee.commons.model.Result;
 import code.ponfee.commons.reflect.BeanConverts;
@@ -55,12 +55,12 @@ public class RedisManagerController {
     private @Resource RedisManagerService service;
 
     @GetMapping("page")
-    public Result<Page<RedisKey>> query4page(PageRequestParams params) {
+    public Result<Page<RedisKey>> query4page(PageParameter params) {
         return Result.success(service.query4page(params));
     }
 
     @GetMapping("view")
-    public void query4view(PageRequestParams params, HttpServletRequest req, HttpServletResponse resp) {
+    public void query4view(PageParameter params, HttpServletRequest req, HttpServletResponse resp) {
         Table<RedisKey> table = new Table<>(THEADS, rk -> BeanConverts.toArray(rk, "key", "type", "expire", "value"));
         Page<RedisKey> page = service.query4page(params);
         page.forEach(row -> table.addRow(row));
@@ -108,7 +108,7 @@ public class RedisManagerController {
     }
 
     // ------------------------------------------------------------private methods
-    private String buildForm(PageRequestParams params) {
+    private String buildForm(PageParameter params) {
         MatchMode matchmode = Enums.ofIgnoreCase(MatchMode.class, params.getString("matchmode"), MatchMode.LIKE);
         StringBuilder html = new StringBuilder(2048)
             .append("<select name=\"matchmode\">\n")
